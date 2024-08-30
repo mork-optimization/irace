@@ -496,6 +496,10 @@ ablation <- function(iraceResults, src = 1L, target = NULL,
   save_ablog(complete = TRUE)
 }
 
+substrRight <- function(x, n){
+  substr(x, nchar(x)-n+1, nchar(x))
+}
+                      
 ablation_labels <- function(trajectory, configurations)
 {
   configurations <- removeConfigurationsMetaData(configurations[trajectory, , drop = FALSE])
@@ -507,7 +511,7 @@ ablation_labels <- function(trajectory, configurations)
     # Select everything that is NOT NA now and was different or NA before.
     select <- !is.na(current) & (is.na(last) | (current != last))
     irace.assert(!anyNA(select))
-    labels[i] <- paste0(param_names[select], "=", current[, select], collapse = "\n")
+    labels[i] <- paste0(substrRight(param_names[select], 10), "=", current[, select], collapse = "\n")
     last <- current
   }
   labels
