@@ -8,8 +8,10 @@
 [![R build
 status](https://github.com/MLopez-Ibanez/irace/workflows/R-CMD-check/badge.svg)](https://github.com/MLopez-Ibanez/irace/actions) 
 [![Codecov test coverage](https://codecov.io/gh/MLopez-Ibanez/irace/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MLopez-Ibanez/irace?branch=master)
+[![r-universe version](https://mlopez-ibanez.r-universe.dev/badges/irace)](https://mlopez-ibanez.r-universe.dev/irace)
+[![r-universe build status](https://github.com/r-universe/mlopez-ibanez/actions/workflows/build.yml/badge.svg)](https://github.com/r-universe/mlopez-ibanez/actions/workflows/build.yml)
 <!-- badges: end -->
-  
+
 [ [**Homepage**](https://mlopez-ibanez.github.io/irace/) ] [ [**User Guide (PDF)**](https://cran.r-project.org/package=irace/vignettes/irace-package.pdf) ]
 
 **Maintainers:** [Manuel López-Ibáñez](https://lopez-ibanez.eu/), Leslie Pérez Cáceres
@@ -233,11 +235,10 @@ You can also launch irace by opening the R console and executing:
 ### GitHub (Development version) ###
 
 If you wish to try the development version, you can install it by executing the
-following commands within the R console:
+following command within the R console:
 
 ```R
-    install.packages("remotes")
-    remotes::install_github("MLopez-Ibanez/irace", upgrade=FALSE)
+    install.packages('irace', repos = c('https://mlopez-ibanez.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 ### Python ###
@@ -253,8 +254,8 @@ Usage
 
 1. Create a directory for storing the tuning scenario setup (Bash shell):
 ```bash
-        mkdir ~/tuning
-        cd ~/tuning
+        mkdir ./tuning
+        cd ./tuning
 ```
 
 2. Initialize your tuning directory with template config files (Bash shell):
@@ -269,11 +270,12 @@ Usage
       default. If you wish to maximize it, just multiply the value by `-1`
       within the script.
     * In `scenario.txt`, uncomment and assign only the parameters for which
-      you need a value different than the default one.
+      you need a value different than the default one. For example, you may need to set
+      `trainInstancesDir="./Instances/"`.
    
     There are examples in `$IRACE_HOME/examples/`.
 
-4. Put the instances in `~/tuning/Instances/`. In addition, you can
+4. Put the instances in `./tuning/Instances/`. In addition, you can
    create a file that specifies which instances from that directory
    should be run and which instance-specific parameters to use. See
    `scenario.txt` and `instances-list.txt` for examples. The command
@@ -283,7 +285,7 @@ Usage
 
 5. Calling the command in the Bash shell:
 ```bash
-        cd ~/tuning/ && $IRACE_HOME/bin/irace
+        cd ./tuning/ && $IRACE_HOME/bin/irace
 ```
    performs one run of Iterated Race. See the output of `irace --help` for
    additional irace parameters. Command-line parameters override the
@@ -296,7 +298,7 @@ For executing several repetitions of irace in parallel, call the
 program `parallel-irace` from the Bash shell:
 
 ```bash
-    cd ~/tuning/ && $IRACE_HOME/bin/parallel-irace N
+    cd ./tuning/ && $IRACE_HOME/bin/parallel-irace N
 ```
 
 where N is the number of repetitions. By default, the execution directory of

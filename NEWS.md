@@ -17,6 +17,10 @@
    present. The number of `digits` for real-valued parameters is now specified
    in the parameter space description. See the example in `readParameters()`.
 
+ * The default value of the scenario option `trainInstancesDir` is now `""`.
+   The previous default value of `"./Instances"` often caused confusion to
+   users not using files as training instances.
+ 
  * The `scenario` object now includes the `parameters` object. Thus
    functions such as `irace()`, which previously took as arguments both
    `scenario` and `parameters`, now only take `scenario`. This also means that
@@ -128,6 +132,8 @@
  * `plotAblation()` has several new options:
     - `type='rank'` to plot ranks per instance instead of raw cost values.
     - `n` to limit the number of parameters shown in the plot.
+    - `width` replaces `pdf.width`.
+    - `height` sets the height of the plot in the PDF file.
 
  * The previously internal function `check.output.target.runner` is renamed to
    `check_output_target_runner` and exported to allow users who write their own
@@ -167,6 +173,8 @@
 
 ## Fixes
 
+ * `ablation_cmdline()` and `plotAblation()` no longer create an empty `Rplots.pdf` file when specifying an output PDF file.
+  
  * Fix #66: when using `maxTime > 0`, irace estimates the time per run by
    executing 2 configurations on `firstTest` instances and adjusts `boundMax`
    to not go over `budgetEstimation`. This may result in a smaller `boundMax`
@@ -205,6 +213,8 @@
  * `ablation()` will detect if the logfile (e.g., `irace.Rdata`) is incomplete.
  
  * `readConfigurationsFile()` now handles parameters with dependent domains.
+ 
+ * Fix #71: Ensure `".ID."` is the first column in `checkTargetFiles()` (Manuel López-Ibáñez, reported by @ivan1arriola)
  
  
 # irace 3.5

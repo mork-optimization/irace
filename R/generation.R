@@ -78,9 +78,8 @@ get_dependent_domain <- function(param, configuration)
 
 generate_sobol <- function(parameters, n, repair = NULL)
 {
-  # Do not use .Machine$integer.max to minimize differences between machines.
-  seed <- sample.int(2147483647L, size = 1L)
-  confs <- spacefillr::generate_sobol_set(n, dim = parameters$nbVariable, seed = seed)
+  confs <- spacefillr::generate_sobol_set(n, dim = parameters$nbVariable,
+    seed = runif_integer(size = 1L))
   confs <- data.table(confs)
   setnames(confs, parameters$names_variable)
   hierarchy <- parameters$hierarchy

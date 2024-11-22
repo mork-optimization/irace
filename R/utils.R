@@ -481,6 +481,9 @@ is.sub.path <- function(x, dir, n = nchar(dir)) substr(x, 1L, n) == dir
 
 irace_save_logfile <- function(iraceResults, scenario)
 {
+  # FIXME: Raul Santa Maria proposed to only save if sufficient times (>= 1
+  # minute) has passed since the last save. We would need an option to force
+  # saving the last one.
   if (is.null.or.empty(scenario$logFile)) return(invisible())
   # Files produced by `saveRDS` (or `serialize` to a file connection) are not
   # suitable as an interchange format between machines, for example to download
@@ -581,3 +584,10 @@ vlast <- function(x)
   else
     x[[lx]]
 }
+
+# 2147483647 is the maximum value for a 32-bit signed integer.
+# We use replace = TRUE, because replace = FALSE allocates memory for each possible number.
+# Do not use .Machine$integer.max unless it is smaller, to minimize differences
+# between machines.
+runif_integer <- function(size)
+  sample.int(min(2147483647L, .Machine$integer.max), size = size, replace = TRUE)
