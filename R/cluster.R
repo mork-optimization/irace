@@ -89,7 +89,7 @@ cluster_lapply <- function(X, scenario, poll.time = 2)
            torque = torque.job.finished,
            slurm = slurm.job.finished,
            htcondor = htcondor.job.finished,
-           irace.error ("Invalid value of scenario$batchmode = ", scenario$batchmode))
+           irace_error ("Invalid value of scenario$batchmode = ", scenario$batchmode))
 
   # Parallel controls how many jobs we send at once. Some clusters have low
   # limits.
@@ -101,25 +101,25 @@ cluster_lapply <- function(X, scenario, poll.time = 2)
   chunks <- split(X, ceiling(seq_along(X) / chunksize))
   for (chunk in chunks) {
     if (debugLevel >= 1) {
-      irace.note ("Sending ", length(chunk), " / ", length(X), " jobs\n")
+      irace_note ("Sending ", length(chunk), " / ", length(X), " jobs\n")
     }
     output <- lapply(chunk, exec_target_runner, scenario = scenario, target_runner = target_runner_qsub)
     jobIDs <- sapply(output, "[[", "jobID")
-  
+
     ## Wait for cluster jobs to finish.
     if (length(jobIDs) > 0L && debugLevel >= 1L) {
-      irace.note("Waiting for jobs ('.' == ", poll.time, " s) ")
+      irace_note("Waiting for jobs ('.' == ", poll.time, " s): ")
     }
     for (jobID in jobIDs) {
       while (!cluster.job.finished(jobID)) {
         if (debugLevel >= 1) { cat(".") }
         Sys.sleep(poll.time)
       }
-      if (debugLevel >= 1) {
-        cat("\n")
-        irace.note ("DONE (", jobID, ")\n")
-      }
+      if (debugLevel >= 1)
+        cat(" DONE(", jobID, ") ")
     }
+    if (debugLevel >= 1)
+      cat("\n")
   }
   output
 }

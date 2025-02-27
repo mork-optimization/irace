@@ -7,7 +7,7 @@
 printParameters(parameters)
 }
 \arguments{
-\item{parameters}{(\code{list()}) \cr Data structure containing the parameter
+\item{parameters}{\code{ParameterSpace}\cr Data structure containing the parameter
 space definition. The data structure has to similar to the one returned by the
 function \code{\link{readParameters}}.}
 }
@@ -32,7 +32,7 @@ parameters_table <- '
  elitistants  "--elitistants " i     (1, ants)            | algorithm == "eas"
  nnls         "--nnls "        i     (5, 50)              | localsearch \%in\% c(1,2,3)
  dlb          "--dlb "         c     (0, 1)               | localsearch \%in\% c(1,2,3)
- 
+
  [forbidden]
  (alpha == 0.0) & (beta == 0.0)
 '
