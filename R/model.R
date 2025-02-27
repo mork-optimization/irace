@@ -35,8 +35,8 @@ initialiseModel <- function (parameters, configurations)
     type <- param[["type"]]
     if (type == "c") {
       nbValues <- length(param[["domain"]])
-      value <- rep(1. / nbValues, nbValues)
-      param <- rep(list(value), nbConfigurations)
+      value <- rep_len(1. / nbValues, nbValues)
+      param <- rep_len(list(value), nbConfigurations)
     } else {
       if (type == "r" || type == "i") {
         sd <- init_sd_numeric(param)
@@ -46,7 +46,7 @@ initialiseModel <- function (parameters, configurations)
         sd <- (length(domain) - 1L) * 0.5
         values <- match(configurations[[currentParameter]], domain)
       } else {
-        irace.internal.error("Unknown parameter type '", type, "'")
+        irace_internal_error("Unknown parameter type '", type, "'")
       }
       # Assign current parameter value to model.
       param <- mapply(c, sd, values, SIMPLIFY=FALSE, USE.NAMES=FALSE)
@@ -98,7 +98,7 @@ updateModel <- function(parameters, eliteConfigurations, oldModel,
   
   for (currentParameter in param_names) {
     param <- parameters$get(currentParameter)
-    irace.assert(all(ids_in_model %in% names(oldModel[[currentParameter]])))
+    irace_assert(all(ids_in_model %in% names(oldModel[[currentParameter]])))
     this_model <- oldModel[[currentParameter]][ids_in_model]
     values <- eliteConfigurations[[currentParameter]]
     values_not_na <- !is.na(values)
@@ -109,7 +109,7 @@ updateModel <- function(parameters, eliteConfigurations, oldModel,
       values <- match(values, param[["domain"]])
       this_model[values_not_na] <- mapply(update_prob, this_model[values_not_na], values, SIMPLIFY=FALSE)
     } else {
-      irace.assert(type %in% c("i", "r", "o"))
+      irace_assert(type %in% c("i", "r", "o"))
       if (type == "o") 
         values <- match(values, param[["domain"]])
       this_model[values_not_na] <- mapply(function(p, value) c(p[[1L]] * num_factor, value),
@@ -143,7 +143,7 @@ restartModel <- function(model, configurations, restart_ids, parameters,
   
   for (pname in parameters$names_variable) {
     model_param <- model[[pname]]
-    irace.assert (all(restart_ids %in% names(model_param)), {
+    irace_assert (all(restart_ids %in% names(model_param)), {
       cat("Param:", pname, "\n")
       print(restart_ids)
       print(model)
@@ -161,7 +161,7 @@ restartModel <- function(model, configurations, restart_ids, parameters,
       if (type == "i" || type == "r") {
         value <- init_sd_numeric(param)
       } else {
-        irace.assert(type == "o")
+        irace_assert(type == "o")
         value <- (length(param[["domain"]]) - 1L) * 0.5
       }
       # Bring back the value 2 iterations or to the second iteration value.

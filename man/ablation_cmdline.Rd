@@ -14,13 +14,13 @@ provided on the R command line as a character vector, e.g.,
 \value{
 A list containing the following elements:
 \describe{
-\item{configurations}{Configurations tested in the ablation.}
-\item{instances}{A matrix with the instances used in the experiments. First column has the
-instances IDs from \code{iraceResults$scenario$instances}, second column the seed assigned to the instance.}
+\item{allConfigurations}{Configurations tested in the ablation.}
+\item{state}{State of the ablation process.}
 \item{experiments}{A matrix with the results of the experiments (columns are configurations, rows are instances).}
 \item{scenario}{Scenario object with the settings used for the experiments.}
 \item{trajectory}{IDs of the best configurations at each step of the ablation.}
 \item{best}{Best configuration found in the experiments.}
+\item{complete}{\code{TRUE} if the ablation process was completed.}
 }
 }
 \description{
@@ -35,9 +35,11 @@ List of command-line options:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{-l,--log-file            Path to the (.Rdata) file created by irace from which
                          the "iraceResults" object will be loaded.
--S,--src                 Source configuration ID. Default: 1.
--T,--target              Target configuration ID. By default the best
-                         configuration found by irace.
+-S,--src                 Source configuration ID or the path to a file
+                         containing the configuration. Default: 1.
+-T,--target              Target configuration ID (by default the best
+                         configuration found by irace) or the path to a file
+                         containing the configuration.
 -P,--params              Specific parameter names to be used for the ablation
                          (separated with commas). By default use all
 -t,--type                Type of ablation to perform: "full" will execute each

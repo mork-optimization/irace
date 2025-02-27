@@ -30,7 +30,8 @@ help:
 	@echo "install        install the package"
 	@echo "build          build the package as a tar.gz file"
 	@echo "check          build the package and run 'R CMD check'"
-	@echo "check TEST=x   run test called test-x.R"
+	@echo "test           run all tests under testthat"
+	@echo "test TEST=x    run test called test-x.R"
 	@echo "rsync          copy the package and install it on $(RNODE)"
 	@echo "cran           build the package and run 'R CMD check --as-cran'"
 	@echo "winbuild       submit the package to the WINDOWS builder service"
@@ -47,12 +48,13 @@ install: build
 	cd $(BINDIR) && R CMD INSTALL $(INSTALL_FLAGS) $(PACKAGE)_$(PACKAGEVERSION).tar.gz
 
 quick-install:
-	cd $(BINDIR) &&	R CMD build $(BUILD_FLAGS) $(NO_BUILD_VIGNETTES) $(PACKAGEDIR) && R CMD INSTALL $(INSTALL_FLAGS) $(PACKAGE)_$(PACKAGEVERSION).tar.gz
+	R CMD INSTALL $(INSTALL_FLAGS) --no-docs $(PACKAGEDIR)
 
 genoptions: R/irace-options.R vignettes/section/irace-options.tex
 
 R/irace-options.R vignettes/section/irace-options.tex: scripts/irace_options.json scripts/generate-options.R
 	cd scripts && R --slave -f generate-options.R && cd ..
+	touch R/irace-options.R vignettes/section/irace-options.tex
 
 gendoc:
 	$(Reval) 'devtools::document()'
@@ -61,7 +63,7 @@ pkgdown: gendoc
 	$(Reval) 'pkgdown::build_site()'
 	@$(MAKE) clean
 
-build: 
+build:
 	@$(MAKE) genoptions
 	$(MAKE) releasevignette
 	@if grep -q @ $(PACKAGEDIR)/vignettes/$(PACKAGE)-package.bib; then true; \
@@ -107,18 +109,18 @@ releasecheck: cran
 	$(MAKE) macbuild
 
 check: build
+	test -d ./GenericWrapper4AC/build || (cd GenericWrapper4AC && python3 setup.py install --user)
+	cd $(BINDIR) && (_R_CHECK_FORCE_SUGGESTS_=false NOT_CRAN=true R CMD check --run-donttest --timings --install-args="$(INSTALL_FLAGS)" $(PACKAGE)_$(PACKAGEVERSION).tar.gz; cat $(PACKAGE).Rcheck/$(PACKAGE)-Ex.timings)
+
+# Using testthat nicer output.
+test: clean
 ifdef TEST
 	_R_CHECK_FORCE_SUGGESTS_=false NOT_CRAN=true $(Reval) 'devtools::test(filter="$(TEST)", stop_on_failure = TRUE)'
 else
-	test -d ./GenericWrapper4AC/build || (cd GenericWrapper4AC && python3 setup.py install --user)
-	cd $(BINDIR) && (_R_CHECK_FORCE_SUGGESTS_=false NOT_CRAN=true R CMD check --run-donttest --timings --install-args="$(INSTALL_FLAGS)" $(PACKAGE)_$(PACKAGEVERSION).tar.gz; cat $(PACKAGE).Rcheck/$(PACKAGE)-Ex.timings)
+	_R_CHECK_FORCE_SUGGESTS_=false NOT_CRAN=true $(Reval) 'testthat::test_local(stop_on_failure = TRUE)'
 endif
 
-# Using testthat nicer output
-test: clean
-	_R_CHECK_FORCE_SUGGESTS_=false NOT_CRAN=true $(Reval) 'testthat::test_local(stop_on_failure = TRUE)'
-
-clean: 
+clean:
 	cd $(PACKAGEDIR) && (./cleanup; make -C src -f Makevars clean)
 
 ## FIXME: building the vignettes is a bit complicated and sometimes fails.
@@ -178,8 +180,8 @@ macbuild: releasebuild
 	$(Reval) "rhub::check(platform='macos-highsierra-release-cran', $(RHUB_COMMON_ARGS))"
 
 winbuild: releasebuild
-	$(Reval) "devtools::check_win_release()"
-	$(Reval) "devtools::check_win_devel()"
+	$(Reval) "devtools::check_win_release(args = '--compact-vignettes=both')"
+	$(Reval) "devtools::check_win_devel(args = '--compact-vignettes=both')"
 	$(Reval) "rhub::check_on_windows($(RHUB_COMMON_ARGS))"
 
 examples: quick-install

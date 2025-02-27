@@ -8,27 +8,27 @@ multi_irace(
   scenarios,
   parameters,
   n = 1L,
-  parallel = 1,
-  split_output = parallel > 1,
+  parallel = 1L,
+  split_output = parallel > 1L,
   global_seed = NULL
 )
 }
 \arguments{
-\item{scenarios}{(\code{list()}) \cr A list of scenarios.
+\item{scenarios}{\code{list()}\cr A list of scenarios.
 If only a single scenario is supplied, it is used for all parameters.}
 
-\item{parameters}{(\code{list()}) \cr A list of parameter space definitions.
+\item{parameters}{\code{list()}\cr A list of parameter space definitions.
 If only a single definition is supplied, it is used for all scenarios.}
 
-\item{n}{(\code{integer(1)}) \cr The number of repetitions.}
+\item{n}{\code{integer(1)}\cr The number of repetitions.}
 
-\item{parallel}{(\code{integer(1)}) \cr The number of workers to use.
+\item{parallel}{\code{integer(1)}\cr The number of workers to use.
 A value of \code{1} means sequential execution. Note that \code{parallel > 1} is not supported on Windows.}
 
-\item{split_output}{(\code{logical(1)}) \cr If \code{TRUE}, the output of \code{\link[=irace]{irace()}} is written to \verb{\{execDir\}/run_\{i\}/irace.out}
+\item{split_output}{\code{logical(1)}\cr If \code{TRUE}, the output of \code{\link[=irace]{irace()}} is written to \verb{\{execDir\}/run_\{i\}/irace.out}
 instead of the standard output.}
 
-\item{global_seed}{(\code{integer(1)}) \cr The global seed used to seed the individual runs.}
+\item{global_seed}{\code{integer(1)}\cr The global seed used to seed the individual runs.}
 }
 \value{
 A list of the outputs of \code{\link[=irace]{irace()}}.

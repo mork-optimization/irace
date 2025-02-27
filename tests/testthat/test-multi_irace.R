@@ -1,5 +1,6 @@
 withr::with_output_sink("test-multi_irace.Rout", {
 
+# FIXME: Use temporary files and directories.
 make.target.runner <- function(parameters) {
   function(experiment, scenario) {
     cost <- max(1, abs(rnorm(1, mean=sum(unlist(experiment$configuration[parameters])))))
@@ -24,17 +25,15 @@ parameters.table.2 <- make.parameters.table(c("x2", "x3"))
 parameters.table.3 <- make.parameters.table(c("x3", "x1"))
 
 check.default.logFiles <- function(n) {
-  for (i in 1:n) {
-    dir <- sprintf("run_%02d", i)
-    expect_true(dir.exists(dir))
-    expect_true(file.exists(file.path(dir, "irace.Rdata")))
-  }
+  dir <- sprintf("run_%02d", 1:n)
+  expect_equal(dir.exists(dir), rep_len(TRUE, n))
+  expect_equal(file.exists(file.path(dir, "irace.Rdata")), rep_len(TRUE, n))
 }
 
 test_that("multiple scenarios, multiple parameters", {
   skip_on_cran()
   # Reproducible results
-  generate.set.seed()
+  generate_set_seed()
 
   scenarios <- lapply(list(target.runner.1, target.runner.2, target.runner.3), make.scenario)
   parameters <- list(parameters.table.1, parameters.table.2, parameters.table.3)
@@ -48,7 +47,7 @@ test_that("multiple scenarios, multiple parameters", {
 test_that("one scenario, multiple parameters", {
   skip_on_cran()
   # Reproducible results
-  generate.set.seed()
+  generate_set_seed()
 
   scenarios <- list(make.scenario(target.runner.1))
   dummy_parameters_names <- c("dummy1", "dummy2", "dummy3")
@@ -63,7 +62,7 @@ test_that("one scenario, multiple parameters", {
 test_that("multiple scenarios, one parameters", {
   skip_on_cran()
   # Reproducible results
-  generate.set.seed()
+  generate_set_seed()
 
   scenarios <- lapply(list(100, 500, 1000), function(maxExperiments) make.scenario(target.runner.1, maxExperiments) )
   parameters <- list(parameters.table.1)
@@ -76,7 +75,7 @@ test_that("multiple scenarios, one parameters", {
 test_that("one scenario, one parameters, multiple n", {
   skip_on_cran()
   # Reproducible results
-  generate.set.seed()
+  generate_set_seed()
 
   scenarios <- list(make.scenario(target.runner.1))
   parameters <- list(parameters.table.1)
@@ -88,7 +87,7 @@ test_that("one scenario, one parameters, multiple n", {
 test_that("multiple scenarios, multiple parameters, multiple n", {
   skip_on_cran()
   # Reproducible results
-  generate.set.seed()
+  generate_set_seed()
 
   scenarios <- lapply(list(target.runner.1, target.runner.2, target.runner.3), make.scenario)
   parameters <- list(parameters.table.1, parameters.table.2, parameters.table.3)
@@ -101,7 +100,7 @@ test_that("multiple scenarios, multiple parameters, multiple n", {
 test_that("logFile not in execDir", {
   skip_on_cran()
   # Reproducible results
-  generate.set.seed()
+  generate_set_seed()
 
   execDir <- path_rel2abs("./multi_irace_execDir")
   logFileDir <- path_rel2abs("./multi_irace_logFileDir")
@@ -141,13 +140,14 @@ test_that("global seed", {
 test_that("sequential and parallel identical", {
   skip_on_cran()
   skip_on_os("windows")
-  skip_if(test_irace_detectCores() <= 1L,
+  ncores <- test_irace_detectCores()
+  skip_if(ncores <= 1L,
           message = "This test only makes sense if multiple cores are available")
   scenarios <- lapply(list(target.runner.1, target.runner.2, target.runner.3), make.scenario)
   parameters <- list(parameters.table.1, parameters.table.2, parameters.table.3)
 
   runs.sequential <- multi_irace(scenarios, parameters, global_seed = 42)
-  runs.parallel <- multi_irace(scenarios, parameters, global_seed = 42, parallel = test_irace_detectCores())
+  runs.parallel <- multi_irace(scenarios, parameters, global_seed = 42, parallel = ncores)
 
   expect_equal(runs.sequential, runs.parallel)
 })

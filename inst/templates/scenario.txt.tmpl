@@ -61,11 +61,13 @@
 ## a multiple of `eachTest`.
 # firstTest = 5
 
-## Number of training instances, that make up a `block' in
+## Number of training instances, that make up a 'block' in
 ## `trainInstancesFile`. Elimination of configurations will only be performed
 ## after evaluating a complete block and never in the middle of a block. Each
 ## block typically contains one instance from each instance class (type or
-## family) and the block size is the number of classes.
+## family) and the block size is the number of classes. The value of
+## `blockSize` will multiply `firstTest`, `eachTest` and
+## `elitistNewInstances`.
 # blockSize = 1
 
 ## Number of instances evaluated between elimination tests.
@@ -158,7 +160,7 @@
 # quiet = 0
 
 ## Debug level of the output of `irace`. Set this to 0 to silence all debug
-## messages. Higher values provide more verbose debug messages.
+## messages. Higher values (1, 2 or 3) provide more verbose debug messages.
 # debugLevel = 0
 
 ## Seed of the random number generator (by default, generate a random seed).
@@ -190,6 +192,10 @@
 ## computation time of configurations. Capping is enabled by default if
 ## `elitist` is active, `maxTime > 0` and `boundMax > 0`.
 # capping = NA
+
+## If set to 1, elimination due to capping only happens after `firstTest`
+## instances are seen.
+# cappingAfterFirstTest = 0
 
 ## Measure used to obtain the execution bound from the performance of the
 ## elite configurations: median, mean, worst, best.
@@ -244,4 +250,3 @@
 
 ## END of scenario file
 ############################################################################
-
