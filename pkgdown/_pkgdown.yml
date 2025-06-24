@@ -4,27 +4,31 @@ url: https://mlopez-ibanez.github.io/irace/
 template:
   bootstrap: 5
   bootswatch: sandstone
+  light-switch: true
   bslib:
-    link-color: "#447099" 
+    link-color: "#447099"
     font-scale: 0.9
     link-decoration: none
     link-hover-decoration: underline
     border-radius: 0
     btn-border-radius: 3px
-  
+
 development:
   mode: unreleased
 
 navbar:
   structure:
-    left:  [home, intro, guide, reference, articles, tutorials, news]
-    right: [search, cran, github]
-    
+    left:  [home, intro, guide, tutorial, reference, articles, tutorials, news]
+    right: [search, cran, github, lightswitch]
+
   components:
     home: ~
     guide:
       text: User Guide
       href: irace-package.pdf
+    tutorial:
+      text: Tutorial
+      href: https://lopez-ibanez.eu/2024-redheur/
     cran:
       icon: fab fa-r-project
       href: https://cloud.r-project.org/package=irace
@@ -39,4 +43,3 @@ reference:
   contents: has_concept("ablation")
 - title: Other functions
   contents: lacks_concepts(c("analysis", "running", "ablation"))
-  
