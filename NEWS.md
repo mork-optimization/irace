@@ -1,5 +1,12 @@
 **If you are viewing this file on CRAN, please check [latest news on the irace website](https://mlopez-ibanez.github.io/irace/news/index.html) where the formatting is also better.**
 
+# irace 4.5
+
+## New features and improvements
+
+ * #98 irace callback: Add an optional `iterationCallback` scenario function that is invoked after each completed irace iteration.
+   This allows irace users to monitor tuning progress or collect intermediate results without modifying irace internals. Check the user guide for more details and an example implementation.
+
 # irace 4.4.3.9000
 
  * Fix #94: `sample_model.ParamOrd()` now samples uniformly when the model
